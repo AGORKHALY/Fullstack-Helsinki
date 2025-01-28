@@ -1,6 +1,13 @@
-const Number = ({ person }) => {
+const Number = ({ persons }) => {
     return (
-        <li>{person.name} {person.number}</li>
+        <ul>
+            {persons.map(person =>
+                <li key={person.name}>
+                    {person.name} {person.number}
+                </li>
+            )}
+        </ul>
+
     )
 }
 export default Number

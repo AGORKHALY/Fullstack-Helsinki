@@ -1,20 +1,21 @@
-import { useState } from 'react'
-import Number from './components/Numbers'
+import { useState } from 'react';
+import Number from './components/Numbers';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
 
 const App = () => {
-  const [persons, setPersons] = useState(
-    [
-      {
-        name: 'Arto Hellas',
-        number: '040-1234567'
-      }
-    ]
-  )
-  const [newNumber, setNewNumber] = useState('')
-  const [newName, setNewName] = useState('')
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ]);
+  const [newNumber, setNewNumber] = useState('');
+  const [newName, setNewName] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
 
   const addPerson = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const isDuplicate = persons.some(person => person.name === newName);
     if (isDuplicate) {
       alert(`${newName} is already added to the phonebook`);
@@ -22,45 +23,42 @@ const App = () => {
     }
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: persons.length + 1
     };
-    setPersons(persons.concat(personObject))
-    setNewName('')
-  }
+    setPersons(persons.concat(personObject));
+    setNewName('');
+    setNewNumber('');
+  };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
-    setNewNumber(event.target.value)
-  }
+    setNewNumber(event.target.value);
+  };
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
-    setNewName(event.target.value)
-  }
+    setNewName(event.target.value);
+  };
+
+  const handleFilterChange = (event) => {
+    setFilterQuery(event.target.value);
+
+    const filteredPersons = persons.filter(person =>
+      person.name.toLowerCase().includes(filterQuery.toLowerCase())
+    );
+    setPersons(filteredPersons)
+  };
+
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter filterQuery={filterQuery} handleFilterChange={handleFilterChange} />
+      <h2>Add a new</h2>
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <ul>
-        {persons.map(person =>
-          <Number key={person.name} person={person} />
-        )}
-      </ul>
-
+      <Number persons={persons} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
